@@ -5,6 +5,6 @@
       "destination": "/index.html"
     }
   ],
-  "buildCommand": "git config --global --add safe.directory /vercel/path0/flutter && chmod -R +x $(pwd)/flutter/bin && flutter build web --release",
-  "installCommand": "curl -sL https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.19.6-stable.tar.xz | tar xJ && export PATH=\"$PATH:$(pwd)/flutter/bin\""
+  "buildCommand": "export PATH=\"$PATH:$(pwd)/flutter/bin\" && git config --global --add safe.directory /vercel/path0/flutter && chmod -R +x $(pwd)/flutter/bin && flutter build web --release",
+  "installCommand": "curl -sL https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.19.6-stable.tar.xz | tar xJ"
 }
