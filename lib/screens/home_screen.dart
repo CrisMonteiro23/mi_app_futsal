@@ -210,10 +210,17 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildPlayerSelectionGrid(List<Jugador> jugadores) {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+<<<<<<< HEAD
         crossAxisCount: 4, // Aumentado a 4 columnas para hacer los iconos más chicos
         crossAxisSpacing: 8, // Espacio reducido
         mainAxisSpacing: 8, // Espacio reducido
         childAspectRatio: 2.0, // Reducido para hacer las tarjetas más compactas
+=======
+        crossAxisCount: 3, // 3 columnas de jugadores
+        crossAxisSpacing: 10,
+        mainAxisSpacing: 10,
+        childAspectRatio: 2.5, // Ajusta la relación de aspecto de las tarjetas
+>>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
       ),
       itemCount: jugadores.length,
       itemBuilder: (context, index) {
@@ -225,7 +232,11 @@ class _HomeScreenState extends State<HomeScreen> {
             color: isSelected ? Colors.blueAccent.shade100 : Colors.grey.shade200,
             elevation: isSelected ? 8 : 2,
             shape: RoundedRectangleBorder(
+<<<<<<< HEAD
               borderRadius: BorderRadius.circular(8), // Bordes ligeramente más pequeños
+=======
+              borderRadius: BorderRadius.circular(10),
+>>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
               side: BorderSide(
                 color: isSelected ? Colors.blueAccent : Colors.transparent,
                 width: 2,
@@ -236,7 +247,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 jugador.nombre,
                 textAlign: TextAlign.center,
                 style: TextStyle(
+<<<<<<< HEAD
                   fontSize: 14, // Tamaño de fuente reducido
+=======
+                  fontSize: 16,
+>>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
                   fontWeight: FontWeight.bold,
                   color: isSelected ? Colors.blueAccent.shade700 : Colors.black87,
                 ),
@@ -262,12 +277,20 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.green, // Botón verde para "a favor"
+<<<<<<< HEAD
             minimumSize: const Size(200, 50), // Tamaño mínimo del botón ligeramente reducido
             textStyle: const TextStyle(fontSize: 18), // Tamaño de fuente reducido
           ),
           child: const Text('Llegada a favor'),
         ),
         const SizedBox(height: 20), // Espacio reducido
+=======
+            minimumSize: const Size(200, 60), // Tamaño mínimo del botón
+          ),
+          child: const Text('Llegada a favor', style: TextStyle(fontSize: 22)),
+        ),
+        const SizedBox(height: 30),
+>>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
         ElevatedButton(
           onPressed: () {
             setState(() {
@@ -277,10 +300,16 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red, // Botón rojo para "en contra"
+<<<<<<< HEAD
             minimumSize: const Size(200, 50), // Tamaño mínimo del botón ligeramente reducido
             textStyle: const TextStyle(fontSize: 18), // Tamaño de fuente reducido
           ),
           child: const Text('Llegada en contra'),
+=======
+            minimumSize: const Size(200, 60), // Tamaño mínimo del botón
+          ),
+          child: const Text('Llegada en contra', style: TextStyle(fontSize: 22)),
+>>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
         ),
       ],
     );
@@ -294,6 +323,7 @@ class _HomeScreenState extends State<HomeScreen> {
         final tipo = _tiposLlegada[index];
         final isSelected = _selectedTipoLlegada == tipo;
         return Card(
+<<<<<<< HEAD
           margin: const EdgeInsets.symmetric(vertical: 4.0), // Margen vertical reducido
           color: isSelected ? Colors.blue.shade100 : Colors.white,
           elevation: isSelected ? 6 : 2,
@@ -303,6 +333,15 @@ class _HomeScreenState extends State<HomeScreen> {
               tipo,
               style: TextStyle(
                 fontSize: 16, // Tamaño de fuente reducido
+=======
+          margin: const EdgeInsets.symmetric(vertical: 8.0),
+          color: isSelected ? Colors.blue.shade100 : Colors.white,
+          elevation: isSelected ? 6 : 2,
+          child: ListTile(
+            title: Text(
+              tipo,
+              style: TextStyle(
+>>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 color: isSelected ? Colors.blue.shade800 : Colors.black,
               ),
@@ -363,4 +402,8 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
   }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
