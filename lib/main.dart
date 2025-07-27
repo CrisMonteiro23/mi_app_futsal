@@ -47,7 +47,8 @@ class MyApp extends StatelessWidget {
             textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Estilo de texto
           ),
         ),
-        cardTheme: const CardThemeData( // Tema para las tarjetas
+        // CORRECCIÓN: Se eliminó 'const' de CardThemeData porque BorderRadius.circular no es const.
+        cardTheme: CardThemeData( // Tema para las tarjetas
           elevation: 4, // Sombra
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10), // Bordes redondeados
