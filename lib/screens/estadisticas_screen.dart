@@ -190,6 +190,7 @@ class EstadisticasScreen extends StatelessWidget {
 
     // 2. Descargar como archivo (solo funciona en web o si se implementa lógica de guardado de archivos en móvil/desktop)
     // Para web, podemos crear un "data URI" y abrirlo en una nueva pestaña para que el navegador lo descargue.
+    // CORRECCIÓN: Se eliminó el parámetro 'headers' de Uri.dataFromString
     if (Theme.of(context).platform == TargetPlatform.android || Theme.of(context).platform == TargetPlatform.iOS) {
       // En móvil, necesitarías un paquete como path_provider y file_picker
       ScaffoldMessenger.of(context).showSnackBar(
@@ -203,9 +204,9 @@ class EstadisticasScreen extends StatelessWidget {
         csv,
         mimeType: 'text/csv',
         encoding: SystemEncoding(), // Usa la codificación del sistema
-        headers: {
-          'Content-Disposition': 'attachment; filename=futsal_data.csv',
-        },
+        // headers: { // ESTA LÍNEA SE ELIMINA
+        //   'Content-Disposition': 'attachment; filename=futsal_data.csv', // Y ESTA TAMBIÉN
+        // },
       );
       // Abrir en una nueva pestaña para forzar la descarga
       if (await canLaunchUrl(dataUri)) {
