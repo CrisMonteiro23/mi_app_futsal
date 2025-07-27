@@ -7,11 +7,8 @@ import 'package:mi_app_futsal/models/situacion.dart';
 import 'package:csv/csv.dart'; // Para exportar a CSV
 import 'package:flutter/services.dart'; // Para copiar al portapapeles
 import 'package:url_launcher/url_launcher.dart'; // Para abrir enlaces (útil para CSV)
-<<<<<<< HEAD
 import 'dart:convert'; // Necesaria para usar utf8 encoding
 import 'package:fl_chart/fl_chart.dart'; // ¡NUEVA IMPORTACIÓN PARA GRÁFICOS!
-=======
->>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
 
 class EstadisticasScreen extends StatelessWidget {
   const EstadisticasScreen({super.key});
@@ -19,11 +16,7 @@ class EstadisticasScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-<<<<<<< HEAD
       length: 3, // ¡Cambiado a 3 pestañas: Jugadores, Tipos de Situación, Gráficos!
-=======
-      length: 2, // Dos pestañas: Jugadores y Tipos de Situación
->>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Estadísticas de Análisis'),
@@ -31,10 +24,7 @@ class EstadisticasScreen extends StatelessWidget {
             tabs: [
               Tab(text: 'Por Jugador', icon: Icon(Icons.person)),
               Tab(text: 'Por Tipo de Situación', icon: Icon(Icons.category)),
-<<<<<<< HEAD
               Tab(text: 'Gráficos', icon: Icon(Icons.bar_chart)), // Nueva pestaña
-=======
->>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
             ],
           ),
         ),
@@ -42,7 +32,6 @@ class EstadisticasScreen extends StatelessWidget {
           builder: (context, appData, child) {
             final playerStats = appData.getPlayerStats();
             final situacionTypeStats = appData.getSituacionTypeStats();
-<<<<<<< HEAD
 
             return TabBarView(
               children: [
@@ -52,16 +41,6 @@ class EstadisticasScreen extends StatelessWidget {
                 _buildSituationTypeStatsTable(context, situacionTypeStats),
                 // Pestaña 3: Gráficos
                 _buildChartsView(context, playerStats, situacionTypeStats, appData.jugadoresDisponibles),
-=======
-            final allSituations = appData.situacionesRegistradas;
-
-            return TabBarView(
-              children: [
-                // Pestaña 1: Estadísticas por Jugador
-                _buildPlayerStatsTable(context, playerStats, appData.jugadoresDisponibles),
-                // Pestaña 2: Estadísticas por Tipo de Situación
-                _buildSituationTypeStatsTable(context, situacionTypeStats),
->>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
               ],
             );
           },
@@ -88,7 +67,6 @@ class EstadisticasScreen extends StatelessWidget {
       );
     }
 
-<<<<<<< HEAD
     final List<Jugador> jugadoresConDatos = jugadores.where((jugador) {
       final playerStat = stats[jugador.id];
       return playerStat != null && (playerStat['favor']! > 0 || playerStat['contra']! > 0);
@@ -105,10 +83,6 @@ class EstadisticasScreen extends StatelessWidget {
     }
 
     jugadoresConDatos.sort((a, b) => a.nombre.toLowerCase().compareTo(b.nombre.toLowerCase()));
-=======
-    // Ordenar jugadores alfabéticamente por nombre
-    jugadores.sort((a, b) => a.nombre.toLowerCase().compareTo(b.nombre.toLowerCase()));
->>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -124,11 +98,7 @@ class EstadisticasScreen extends StatelessWidget {
             DataColumn(label: Text('En Contra', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
             DataColumn(label: Text('Total', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
           ],
-<<<<<<< HEAD
           rows: jugadoresConDatos.map((jugador) {
-=======
-          rows: jugadores.map((jugador) {
->>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
             final playerStat = stats[jugador.id] ?? {'favor': 0, 'contra': 0};
             final favor = playerStat['favor']!;
             final contra = playerStat['contra']!;
@@ -158,7 +128,6 @@ class EstadisticasScreen extends StatelessWidget {
       );
     }
 
-<<<<<<< HEAD
     final List<MapEntry<String, Map<String, int>>> sortedStats = stats.entries.toList();
     sortedStats.sort((a, b) => a.key.toLowerCase().compareTo(b.key.toLowerCase()));
 
@@ -176,11 +145,6 @@ class EstadisticasScreen extends StatelessWidget {
         ),
       );
     }
-=======
-    // Convertir el mapa a una lista de entradas para poder ordenarlas
-    final List<MapEntry<String, Map<String, int>>> sortedStats = stats.entries.toList();
-    sortedStats.sort((a, b) => a.key.toLowerCase().compareTo(b.key.toLowerCase())); // Ordenar por nombre de tipo
->>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -196,11 +160,7 @@ class EstadisticasScreen extends StatelessWidget {
             DataColumn(label: Text('En Contra', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
             DataColumn(label: Text('Total', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
           ],
-<<<<<<< HEAD
           rows: statsConDatos.map((entry) {
-=======
-          rows: sortedStats.map((entry) {
->>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
             final tipo = entry.key;
             final typeStat = entry.value;
             final favor = typeStat['favor']!;
@@ -220,7 +180,6 @@ class EstadisticasScreen extends StatelessWidget {
     );
   }
 
-<<<<<<< HEAD
   // --- Nueva Vista para Gráficos ---
 
   Widget _buildChartsView(BuildContext context, Map<String, Map<String, int>> playerStats, Map<String, Map<String, int>> situacionTypeStats, List<Jugador> jugadores) {
@@ -322,7 +281,6 @@ class EstadisticasScreen extends StatelessWidget {
                   gridData: const FlGridData(show: true, drawVerticalLine: false),
                   barTouchData: BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
-                      // CORRECCIÓN: 'tooltipBgColor' ha sido reemplazado por 'getTooltipColor'
                       getTooltipColor: (group) => Colors.blueGrey,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
                         String label;
@@ -418,7 +376,6 @@ class EstadisticasScreen extends StatelessWidget {
                   gridData: const FlGridData(show: true, drawVerticalLine: false),
                   barTouchData: BarTouchData(
                     touchTooltipData: BarTouchTooltipData(
-                      // CORRECCIÓN: 'tooltipBgColor' ha sido reemplazado por 'getTooltipColor'
                       getTooltipColor: (group) => Colors.blueGrey,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
                         String label;
@@ -443,8 +400,6 @@ class EstadisticasScreen extends StatelessWidget {
     );
   }
 
-=======
->>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
   // --- Funcionalidad de Exportación a CSV ---
 
   void _exportDataToCsv(BuildContext context, AppData appData) async {
@@ -487,10 +442,6 @@ class EstadisticasScreen extends StatelessWidget {
 
     // 2. Descargar como archivo (solo funciona en web o si se implementa lógica de guardado de archivos en móvil/desktop)
     // Para web, podemos crear un "data URI" y abrirlo en una nueva pestaña para que el navegador lo descargue.
-<<<<<<< HEAD
-=======
-    // CORRECCIÓN: Se eliminó el parámetro 'headers' de Uri.dataFromString
->>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
     if (Theme.of(context).platform == TargetPlatform.android || Theme.of(context).platform == TargetPlatform.iOS) {
       // En móvil, necesitarías un paquete como path_provider y file_picker
       ScaffoldMessenger.of(context).showSnackBar(
@@ -503,14 +454,7 @@ class EstadisticasScreen extends StatelessWidget {
       final Uri dataUri = Uri.dataFromString(
         csv,
         mimeType: 'text/csv',
-<<<<<<< HEAD
         encoding: utf8, // Usar utf8 de dart:convert
-=======
-        encoding: SystemEncoding(), // Usa la codificación del sistema
-        // headers: { // ESTA LÍNEA SE ELIMINA
-        //   'Content-Disposition': 'attachment; filename=futsal_data.csv', // Y ESTA TAMBIÉN
-        // },
->>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
       );
       // Abrir en una nueva pestaña para forzar la descarga
       if (await canLaunchUrl(dataUri)) {
@@ -531,8 +475,4 @@ class EstadisticasScreen extends StatelessWidget {
     // Esta implementación exporta los datos crudos en formato CSV, que es fácilmente importable en Excel.
     // Una vez en Excel, puedes usar las herramientas de Excel para crear los gráficos deseados.
   }
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 55aed0a081b90ab2b531ead0f36cd3d0b09204a8
