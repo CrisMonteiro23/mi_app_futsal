@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         // Se eliminó 'const' de CardThemeData porque BorderRadius.circular no es const.
-        cardTheme: CardTheme( // Tema para las tarjetas
+        cardTheme: CardThemeData( // Tema para las tarjetas
           elevation: 4, // Sombra
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10), // Bordes redondeados
