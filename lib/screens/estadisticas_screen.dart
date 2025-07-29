@@ -84,6 +84,17 @@ class EstadisticasScreen extends StatelessWidget {
 
     jugadoresConDatos.sort((a, b) => a.nombre.toLowerCase().compareTo(b.nombre.toLowerCase()));
 
+    // Calcular totales generales para la tabla de jugadores
+    int totalFavorJugadores = 0;
+    int totalContraJugadores = 0;
+    for (var jugador in jugadoresConDatos) {
+      final playerStat = stats[jugador.id]!;
+      totalFavorJugadores += playerStat['favor']!;
+      totalContraJugadores += playerStat['contra']!;
+    }
+    final int totalGeneralJugadores = totalFavorJugadores + totalContraJugadores;
+
+
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       child: Padding(
@@ -98,20 +109,32 @@ class EstadisticasScreen extends StatelessWidget {
             DataColumn(label: Text('En Contra', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
             DataColumn(label: Text('Total', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
           ],
-          rows: jugadoresConDatos.map((jugador) {
-            final playerStat = stats[jugador.id] ?? {'favor': 0, 'contra': 0};
-            final favor = playerStat['favor']!;
-            final contra = playerStat['contra']!;
-            final total = favor + contra;
-            return DataRow(
+          rows: [
+            ...jugadoresConDatos.map((jugador) {
+              final playerStat = stats[jugador.id] ?? {'favor': 0, 'contra': 0};
+              final favor = playerStat['favor']!;
+              final contra = playerStat['contra']!;
+              final total = favor + contra;
+              return DataRow(
+                cells: [
+                  DataCell(Text(jugador.nombre)),
+                  DataCell(Text(favor.toString(), textAlign: TextAlign.center)),
+                  DataCell(Text(contra.toString(), textAlign: TextAlign.center)),
+                  DataCell(Text(total.toString(), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold))),
+                ],
+              );
+            }).toList(),
+            // Nueva fila para el total general
+            DataRow(
+              color: MaterialStateProperty.all(Colors.blue.shade50), // Un color de fondo diferente para el total
               cells: [
-                DataCell(Text(jugador.nombre)),
-                DataCell(Text(favor.toString(), textAlign: TextAlign.center)),
-                DataCell(Text(contra.toString(), textAlign: TextAlign.center)),
-                DataCell(Text(total.toString(), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold))),
+                const DataCell(Text('TOTAL GENERAL', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
+                DataCell(Text(totalFavorJugadores.toString(), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.green))),
+                DataCell(Text(totalContraJugadores.toString(), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.red))),
+                DataCell(Text(totalGeneralJugadores.toString(), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blueAccent))),
               ],
-            );
-          }).toList(),
+            ),
+          ],
         ),
       ),
     );
