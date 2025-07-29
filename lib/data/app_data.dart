@@ -1,12 +1,12 @@
-// lib/data/app_data.dart
 import 'package:flutter/material.dart';
-import 'package:uuid/uuid.dart'; // Para generar IDs únicos
+import 'package:uuid/uuid.dart';
 import 'package:mi_app_futsal/models/jugador.dart';
 import 'package:mi_app_futsal/models/situacion.dart';
 
 class AppData extends ChangeNotifier {
   final Uuid _uuid = const Uuid();
 
+  // Lista de jugadores disponibles
   final List<Jugador> _jugadoresDisponibles = [
     Jugador(id: const Uuid().v4(), nombre: 'Victor'),
     Jugador(id: const Uuid().v4(), nombre: 'Fabio'),
@@ -32,7 +32,6 @@ class AppData extends ChangeNotifier {
   void addJugador(String nombre) {
     if (nombre.trim().isEmpty) return;
     if (_jugadoresDisponibles.any((j) => j.nombre.toLowerCase() == nombre.toLowerCase())) return;
-
     _jugadoresDisponibles.add(Jugador(id: _uuid.v4(), nombre: nombre.trim()));
     notifyListeners();
   }
@@ -55,7 +54,7 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ✅ CORREGIDA: Estadísticas por jugador (sin duplicar llegadas para el total global)
+  // Estadísticas por jugador (pueden contener duplicados si un jugador aparece en varias situaciones)
   Map<String, Map<String, int>> getPlayerStats() {
     final Map<String, Map<String, int>> stats = {};
 
@@ -65,10 +64,7 @@ class AppData extends ChangeNotifier {
 
     for (var situacion in _situacionesRegistradas) {
       for (var jugadorId in situacion.jugadoresEnCanchaIds) {
-        if (!stats.containsKey(jugadorId)) {
-          stats[jugadorId] = {'favor': 0, 'contra': 0};
-        }
-
+        stats.putIfAbsent(jugadorId, () => {'favor': 0, 'contra': 0});
         if (situacion.esAFavor) {
           stats[jugadorId]!['favor'] = stats[jugadorId]!['favor']! + 1;
         } else {
@@ -80,7 +76,7 @@ class AppData extends ChangeNotifier {
     return stats;
   }
 
-  // Estadísticas por tipo de situación (sin cambios)
+  // Estadísticas por tipo de situación
   Map<String, Map<String, int>> getSituacionTypeStats() {
     final Map<String, Map<String, int>> stats = {};
 
@@ -92,9 +88,7 @@ class AppData extends ChangeNotifier {
     }
 
     for (var situacion in _situacionesRegistradas) {
-      if (!stats.containsKey(situacion.tipoLlegada)) {
-        stats[situacion.tipoLlegada] = {'favor': 0, 'contra': 0};
-      }
+      stats.putIfAbsent(situacion.tipoLlegada, () => {'favor': 0, 'contra': 0});
       if (situacion.esAFavor) {
         stats[situacion.tipoLlegada]!['favor'] = stats[situacion.tipoLlegada]!['favor']! + 1;
       } else {
@@ -103,5 +97,17 @@ class AppData extends ChangeNotifier {
     }
 
     return stats;
+  }
+
+  // ✅ Totales reales de situaciones (sin duplicación por jugador)
+  Map<String, int> getTotalesReales() {
+    final int favor = _situacionesRegistradas.where((s) => s.esAFavor).length;
+    final int contra = _situacionesRegistradas.where((s) => !s.esAFavor).length;
+    final int total = favor + contra;
+    return {
+      'favor': favor,
+      'contra': contra,
+      'total': total,
+    };
   }
 }
