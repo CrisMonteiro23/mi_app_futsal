@@ -195,7 +195,15 @@ class EstadisticasScreen extends StatelessWidget {
     }).toList();
     situacionStatsConDatos.sort((a, b) => a.key.toLowerCase().compareTo(b.key.toLowerCase()));
 
-    if (jugadoresConDatos.isEmpty && situacionStatsConDatos.isEmpty) {
+    // Calcular el total de llegadas a favor y en contra para el tipo de situación
+    int totalFavorSituacion = 0;
+    int totalContraSituacion = 0;
+    for (var entry in situacionTypeStats.entries) {
+      totalFavorSituacion += entry.value['favor'] ?? 0;
+      totalContraSituacion += entry.value['contra'] ?? 0;
+    }
+
+    if (jugadoresConDatos.isEmpty && situacionStatsConDatos.isEmpty && (totalFavorSituacion == 0 && totalContraSituacion == 0)) {
       return const Center(
         child: Text(
           'No hay datos suficientes para generar gráficos.',
@@ -303,13 +311,117 @@ class EstadisticasScreen extends StatelessWidget {
           if (jugadoresConDatos.isNotEmpty && situacionStatsConDatos.isNotEmpty)
             const SizedBox(height: 40), // Espacio entre gráficos
 
-          if (situacionStatsConDatos.isNotEmpty) ...[
+          if (situacionStatsConDatos.isNotEmpty || (totalFavorSituacion > 0 || totalContraSituacion > 0)) ...[
             const Text(
               'Llegadas por Tipo de Situación',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
+            // Nuevo: Total de llegadas a favor y en contra
+            Padding(
+              padding: const EdgeInsets.only(bottom: 16.0),
+              child: Column(
+                children: [
+                  Text(
+                    'Total a Favor: $totalFavorSituacion',
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
+                  ),
+                  Text(
+                    'Total en Contra: $totalContraSituacion',
+                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
+                  ),
+                  const SizedBox(height: 10),
+                  // Opcional: Un pequeño gráfico de barras para los totales
+                  SizedBox(
+                    height: 100, // Altura para el gráfico de totales
+                    child: BarChart(
+                      BarChartData(
+                        barGroups: [
+                          BarChartGroupData(
+                            x: 0,
+                            barRods: [
+                              BarChartRodData(toY: totalFavorSituacion.toDouble(), color: Colors.green, width: 25, borderRadius: BorderRadius.circular(5)),
+                            ],
+                            showingTooltipIndicators: [0],
+                          ),
+                          BarChartGroupData(
+                            x: 1,
+                            barRods: [
+                              BarChartRodData(toY: totalContraSituacion.toDouble(), color: Colors.red, width: 25, borderRadius: BorderRadius.circular(5)),
+                            ],
+                            showingTooltipIndicators: [0],
+                          ),
+                        ],
+                        titlesData: FlTitlesData(
+                          show: true,
+                          bottomTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (value, meta) {
+                                String text;
+                                switch (value.toInt()) {
+                                  case 0:
+                                    text = 'Favor';
+                                    break;
+                                  case 1:
+                                    text = 'Contra';
+                                    break;
+                                  default:
+                                    text = '';
+                                    break;
+                                }
+                                return Text(text, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold));
+                              },
+                              reservedSize: 20,
+                              interval: 1,
+                            ),
+                          ),
+                          leftTitles: AxisTitles(
+                            sideTitles: SideTitles(
+                              showTitles: true,
+                              getTitlesWidget: (value, meta) {
+                                return Text(value.toInt().toString(), style: const TextStyle(fontSize: 10));
+                              },
+                              interval: 1,
+                              reservedSize: 28,
+                            ),
+                          ),
+                          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                        ),
+                        borderData: FlBorderData(show: false),
+                        gridData: const FlGridData(show: true, drawVerticalLine: false),
+                        barTouchData: BarTouchData(
+                          touchTooltipData: BarTouchTooltipData(
+                            tooltipBgColor: Colors.blueGrey,
+                            getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                              String label;
+                              switch (group.x.toInt()) {
+                                case 0:
+                                  label = 'Favor';
+                                  break;
+                                case 1:
+                                  label = 'Contra';
+                                  break;
+                                default:
+                                  label = '';
+                                  break;
+                              }
+                              return BarTooltipItem(
+                                '$label: ${rod.toY.toInt()}',
+                                const TextStyle(color: Colors.white),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Gráfico por tipo de situación (el que ya existía)
             SizedBox(
               height: 300, // Altura fija para el gráfico
               child: BarChart(
