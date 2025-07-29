@@ -19,7 +19,7 @@ version: 1.0.0+1
 # CORRECCIÓN AQUÍ: Asegúrate de que 'environment:' esté correctamente indentado
 # y que 'sdk:' esté indentado debajo de 'environment:'.
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.16.0 <4.0.0'
 
 dependencies:
   flutter:
