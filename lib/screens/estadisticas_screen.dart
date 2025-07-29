@@ -394,7 +394,8 @@ class EstadisticasScreen extends StatelessWidget {
                         gridData: const FlGridData(show: true, drawVerticalLine: false),
                         barTouchData: BarTouchData(
                           touchTooltipData: BarTouchTooltipData(
-                            tooltipBgColor: Colors.blueGrey,
+                            // CORRECCIÓN AQUÍ: Cambiado 'tooltipBgColor' a 'getTooltipColor'
+                            getTooltipColor: (group) => Colors.blueGrey,
                             getTooltipItem: (group, groupIndex, rod, rodIndex) {
                               String label;
                               switch (group.x.toInt()) {
