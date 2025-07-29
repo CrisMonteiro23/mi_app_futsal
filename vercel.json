@@ -1,0 +1,14 @@
+# Download the required Flutter version
+curl -sL https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.32.8-stable.tar.xz | tar xJ
+
+# Set Git safe directory
+git config --global --add safe.directory $(pwd)/flutter
+
+# Add Flutter to PATH
+export PATH="$PATH:$(pwd)/flutter/bin"
+
+# Confirm Flutter version
+flutter --version
+
+# Run build
+flutter build web --release
