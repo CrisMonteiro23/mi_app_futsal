@@ -37,13 +37,14 @@ class EstadisticasScreen extends StatelessWidget {
   Widget _buildPlayerStatsTable(List<Jugador> jugadores, AppData appData) {
     final situaciones = appData.situacionesRegistradas;
 
-    final Map<int, Map<String, int>> stats = {};
+    // Cambié a String para los ids, que son UUID
+    final Map<String, Map<String, int>> stats = {};
     for (var jugador in jugadores) {
       stats[jugador.id] = {'favor': 0, 'contra': 0};
     }
 
     for (var situacion in situaciones) {
-      for (var jugadorId in situacion.jugadorIds) {
+      for (var jugadorId in situacion.jugadoresEnCanchaIds) {
         if (stats.containsKey(jugadorId)) {
           if (situacion.esAFavor) {
             stats[jugadorId]!['favor'] = stats[jugadorId]!['favor']! + 1;
