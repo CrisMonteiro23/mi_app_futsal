@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:fl_chart/fl_chart.dart';
-import 'package:mi_app_futsal/providers/app_data.dart';
+import 'package:mi_app_futsal/data/app_data.dart';
 import 'package:intl/intl.dart';
 import 'package:csv/csv.dart';
 import 'dart:html' as html;
