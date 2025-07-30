@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../data/app_data.dart';
-import '../model/jugador.dart';
+import '../models/jugador.dart';
 import '../widgets/barras_comparativas.dart';
 
 class EstadisticasScreen extends StatelessWidget {
