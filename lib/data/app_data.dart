@@ -29,6 +29,9 @@ class AppData extends ChangeNotifier {
   // Getter público para acceder a la lista de jugadores
   List<Jugador> get jugadores => List.unmodifiable(_jugadoresDisponibles);
 
+  // Getter para uso directo (estadísticas)
+  List<Jugador> get jugadoresDisponibles => _jugadoresDisponibles;
+
   List<Situacion> get situacionesRegistradas => List.unmodifiable(_situacionesRegistradas);
 
   void addJugador(String nombre) {
@@ -99,6 +102,7 @@ class AppData extends ChangeNotifier {
     return stats;
   }
 
+  // ✅ NUEVO: Totales reales (llegadas únicas, no duplicadas por jugador)
   Map<String, int> getTotalesReales() {
     final int favor = _situacionesRegistradas.where((s) => s.esAFavor).length;
     final int contra = _situacionesRegistradas.where((s) => !s.esAFavor).length;
