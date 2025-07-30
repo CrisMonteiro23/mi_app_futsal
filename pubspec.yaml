@@ -25,14 +25,14 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6
-  uuid: ^4.4.0 # Para generar IDs únicos
-  provider: ^6.0.5 # Para la gestión de estado
-  csv: ^5.1.1 # Para exportar datos a CSV
-  url_launcher: ^6.2.2 # Para abrir URLs (útil para descargar CSV en web)
-  fl_chart: ^0.68.0 # Para gráficos
+  uuid: ^4.4.0
+  provider: ^6.0.5
+  csv: ^5.1.1
+  url_launcher: ^6.2.2
+  fl_chart: ^0.68.0
   excel: ^2.0.0
   path_provider: ^2.0.15
-  share_plus: ^6.5.2
+  share_plus: ^11.0.0
 
 dev_dependencies:
   flutter_test:
