@@ -1,14 +1,12 @@
-// lib/screens/estadisticas_screen.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:mi_app_futsal/data/app_data.dart';
 import 'package:mi_app_futsal/models/jugador.dart';
-import 'package:mi_app_futsal/models/situacion.dart';
-import 'package:csv/csv.dart'; // Para exportar a CSV
-import 'package:flutter/services.dart'; // Para copiar al portapapeles
-import 'package:url_launcher/url_launcher.dart'; // Para abrir enlaces (útil para CSV)
-import 'dart:convert'; // Necesaria para usar utf8 encoding
-import 'package:fl_chart/fl_chart.dart'; // ¡NUEVA IMPORTACIÓN PARA GRÁFICOS!
+import 'package:csv/csv.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'dart:convert';
+import 'package:fl_chart/fl_chart.dart';
 
 class EstadisticasScreen extends StatelessWidget {
   const EstadisticasScreen({super.key});
@@ -16,7 +14,7 @@ class EstadisticasScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 3, // ¡Cambiado a 3 pestañas: Jugadores, Tipos de Situación, Gráficos!
+      length: 3,
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Estadísticas de Análisis'),
@@ -24,7 +22,7 @@ class EstadisticasScreen extends StatelessWidget {
             tabs: [
               Tab(text: 'Por Jugador', icon: Icon(Icons.person)),
               Tab(text: 'Por Tipo de Situación', icon: Icon(Icons.category)),
-              Tab(text: 'Gráficos', icon: Icon(Icons.bar_chart)), // Nueva pestaña
+              Tab(text: 'Gráficos', icon: Icon(Icons.bar_chart)),
             ],
           ),
         ),
@@ -35,11 +33,8 @@ class EstadisticasScreen extends StatelessWidget {
 
             return TabBarView(
               children: [
-                // Pestaña 1: Estadísticas por Jugador (Tabla)
                 _buildPlayerStatsTable(context, playerStats, appData.jugadoresDisponibles),
-                // Pestaña 2: Estadísticas por Tipo de Situación (Tabla)
                 _buildSituationTypeStatsTable(context, situacionTypeStats),
-                // Pestaña 3: Gráficos
                 _buildChartsView(context, playerStats, situacionTypeStats, appData.jugadoresDisponibles),
               ],
             );
@@ -53,8 +48,6 @@ class EstadisticasScreen extends StatelessWidget {
       ),
     );
   }
-
-  // --- Widgets para Tablas de Estadísticas ---
 
   Widget _buildPlayerStatsTable(BuildContext context, Map<String, Map<String, int>> stats, List<Jugador> jugadores) {
     if (stats.isEmpty || jugadores.isEmpty) {
@@ -84,7 +77,6 @@ class EstadisticasScreen extends StatelessWidget {
 
     jugadoresConDatos.sort((a, b) => a.nombre.toLowerCase().compareTo(b.nombre.toLowerCase()));
 
-    // Calcular totales generales para la tabla de jugadores
     int totalFavorJugadores = 0;
     int totalContraJugadores = 0;
     for (var jugador in jugadoresConDatos) {
@@ -93,7 +85,7 @@ class EstadisticasScreen extends StatelessWidget {
       totalContraJugadores += playerStat['contra']!;
     }
     final int totalGeneralJugadores = totalFavorJugadores + totalContraJugadores;
-
+    final totalesReales = Provider.of<AppData>(context, listen: false).getTotalesReales();
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -105,9 +97,9 @@ class EstadisticasScreen extends StatelessWidget {
           headingRowColor: MaterialStateProperty.all(Colors.blue.shade100),
           columns: const [
             DataColumn(label: Text('Jugador', style: TextStyle(fontWeight: FontWeight.bold))),
-            DataColumn(label: Text('A Favor', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-            DataColumn(label: Text('En Contra', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-            DataColumn(label: Text('Total', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+            DataColumn(label: Text('A Favor', style: TextStyle(fontWeight: FontWeight.bold))),
+            DataColumn(label: Text('En Contra', style: TextStyle(fontWeight: FontWeight.bold))),
+            DataColumn(label: Text('Total', style: TextStyle(fontWeight: FontWeight.bold))),
           ],
           rows: [
             ...jugadoresConDatos.map((jugador) {
@@ -118,20 +110,28 @@ class EstadisticasScreen extends StatelessWidget {
               return DataRow(
                 cells: [
                   DataCell(Text(jugador.nombre)),
-                  DataCell(Text(favor.toString(), textAlign: TextAlign.center)),
-                  DataCell(Text(contra.toString(), textAlign: TextAlign.center)),
-                  DataCell(Text(total.toString(), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold))),
+                  DataCell(Text(favor.toString())),
+                  DataCell(Text(contra.toString())),
+                  DataCell(Text(total.toString(), style: const TextStyle(fontWeight: FontWeight.bold))),
                 ],
               );
             }).toList(),
-            // Nueva fila para el total general
             DataRow(
-              color: MaterialStateProperty.all(Colors.blue.shade50), // Un color de fondo diferente para el total
+              color: MaterialStateProperty.all(Colors.blue.shade50),
               cells: [
                 const DataCell(Text('TOTAL GENERAL', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16))),
-                DataCell(Text(totalFavorJugadores.toString(), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.green))),
-                DataCell(Text(totalContraJugadores.toString(), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.red))),
-                DataCell(Text(totalGeneralJugadores.toString(), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blueAccent))),
+                DataCell(Text(totalFavorJugadores.toString(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.green))),
+                DataCell(Text(totalContraJugadores.toString(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.red))),
+                DataCell(Text(totalGeneralJugadores.toString(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.blueAccent))),
+              ],
+            ),
+            DataRow(
+              color: MaterialStateProperty.all(Colors.yellow.shade100),
+              cells: [
+                const DataCell(Text('TOTAL REAL (sin duplicados)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14))),
+                DataCell(Text(totalesReales['favor'].toString(), style: const TextStyle(fontWeight: FontWeight.bold))),
+                DataCell(Text(totalesReales['contra'].toString(), style: const TextStyle(fontWeight: FontWeight.bold))),
+                DataCell(Text(totalesReales['total'].toString(), style: const TextStyle(fontWeight: FontWeight.bold))),
               ],
             ),
           ],
@@ -179,9 +179,9 @@ class EstadisticasScreen extends StatelessWidget {
           headingRowColor: MaterialStateProperty.all(Colors.blue.shade100),
           columns: const [
             DataColumn(label: Text('Tipo de Llegada', style: TextStyle(fontWeight: FontWeight.bold))),
-            DataColumn(label: Text('A Favor', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-            DataColumn(label: Text('En Contra', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
-            DataColumn(label: Text('Total', style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.center)),
+            DataColumn(label: Text('A Favor', style: TextStyle(fontWeight: FontWeight.bold))),
+            DataColumn(label: Text('En Contra', style: TextStyle(fontWeight: FontWeight.bold))),
+            DataColumn(label: Text('Total', style: TextStyle(fontWeight: FontWeight.bold))),
           ],
           rows: statsConDatos.map((entry) {
             final tipo = entry.key;
@@ -192,9 +192,9 @@ class EstadisticasScreen extends StatelessWidget {
             return DataRow(
               cells: [
                 DataCell(Text(tipo)),
-                DataCell(Text(favor.toString(), textAlign: TextAlign.center)),
-                DataCell(Text(contra.toString(), textAlign: TextAlign.center)),
-                DataCell(Text(total.toString(), textAlign: TextAlign.center, style: const TextStyle(fontWeight: FontWeight.bold))),
+                DataCell(Text(favor.toString())),
+                DataCell(Text(contra.toString())),
+                DataCell(Text(total.toString(), style: const TextStyle(fontWeight: FontWeight.bold))),
               ],
             );
           }).toList(),
@@ -202,8 +202,6 @@ class EstadisticasScreen extends StatelessWidget {
       ),
     );
   }
-
-  // --- Nueva Vista para Gráficos ---
 
   Widget _buildChartsView(BuildContext context, Map<String, Map<String, int>> playerStats, Map<String, Map<String, int>> situacionTypeStats, List<Jugador> jugadores) {
     final List<Jugador> jugadoresConDatos = jugadores.where((jugador) {
@@ -218,15 +216,7 @@ class EstadisticasScreen extends StatelessWidget {
     }).toList();
     situacionStatsConDatos.sort((a, b) => a.key.toLowerCase().compareTo(b.key.toLowerCase()));
 
-    // Calcular el total de llegadas a favor y en contra para el tipo de situación
-    int totalFavorSituacion = 0;
-    int totalContraSituacion = 0;
-    for (var entry in situacionTypeStats.entries) {
-      totalFavorSituacion += entry.value['favor'] ?? 0;
-      totalContraSituacion += entry.value['contra'] ?? 0;
-    }
-
-    if (jugadoresConDatos.isEmpty && situacionStatsConDatos.isEmpty && (totalFavorSituacion == 0 && totalContraSituacion == 0)) {
+    if (jugadoresConDatos.isEmpty && situacionStatsConDatos.isEmpty) {
       return const Center(
         child: Text(
           'No hay datos suficientes para generar gráficos.',
@@ -248,32 +238,29 @@ class EstadisticasScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             SizedBox(
-              height: 300, // Altura fija para el gráfico
+              height: 300,
               child: BarChart(
                 BarChartData(
                   barGroups: jugadoresConDatos.map((jugador) {
                     final playerStat = playerStats[jugador.id]!;
                     final favor = playerStat['favor']!.toDouble();
                     final contra = playerStat['contra']!.toDouble();
-                    final total = favor + contra;
 
                     return BarChartGroupData(
                       x: jugadoresConDatos.indexOf(jugador),
                       barRods: [
                         BarChartRodData(
                           toY: favor,
-                          color: Colors.green, // Color para "A Favor"
+                          color: Colors.green,
                           width: 10,
-                          borderRadius: BorderRadius.zero,
                         ),
                         BarChartRodData(
                           toY: contra,
-                          color: Colors.red, // Color para "En Contra"
+                          color: Colors.red,
                           width: 10,
-                          borderRadius: BorderRadius.zero,
                         ),
                       ],
-                      showingTooltipIndicators: [0, 1], // Muestra tooltips para ambas barras
+                      showingTooltipIndicators: [0, 1],
                     );
                   }).toList(),
                   titlesData: FlTitlesData(
@@ -301,7 +288,7 @@ class EstadisticasScreen extends StatelessWidget {
                         getTitlesWidget: (value, meta) {
                           return Text(value.toInt().toString(), style: const TextStyle(fontSize: 10));
                         },
-                        interval: 1, // Intervalo de 1 en el eje Y
+                        interval: 1,
                         reservedSize: 28,
                       ),
                     ),
@@ -314,16 +301,8 @@ class EstadisticasScreen extends StatelessWidget {
                     touchTooltipData: BarTouchTooltipData(
                       getTooltipColor: (group) => Colors.blueGrey,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                        String label;
-                        if (rodIndex == 0) {
-                          label = 'Favor';
-                        } else {
-                          label = 'Contra';
-                        }
-                        return BarTooltipItem(
-                          '$label: ${rod.toY.toInt()}',
-                          const TextStyle(color: Colors.white),
-                        );
+                        final label = rodIndex == 0 ? 'Favor' : 'Contra';
+                        return BarTooltipItem('$label: ${rod.toY.toInt()}', const TextStyle(color: Colors.white));
                       },
                     ),
                   ),
@@ -331,123 +310,16 @@ class EstadisticasScreen extends StatelessWidget {
               ),
             ),
           ],
-          if (jugadoresConDatos.isNotEmpty && situacionStatsConDatos.isNotEmpty)
-            const SizedBox(height: 40), // Espacio entre gráficos
-
-          if (situacionStatsConDatos.isNotEmpty || (totalFavorSituacion > 0 || totalContraSituacion > 0)) ...[
+          if (situacionStatsConDatos.isNotEmpty) ...[
+            const SizedBox(height: 40),
             const Text(
               'Llegadas por Tipo de Situación',
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 20),
-            // Nuevo: Total de llegadas a favor y en contra
-            Padding(
-              padding: const EdgeInsets.only(bottom: 16.0),
-              child: Column(
-                children: [
-                  Text(
-                    'Total a Favor: $totalFavorSituacion',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
-                  ),
-                  Text(
-                    'Total en Contra: $totalContraSituacion',
-                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.red),
-                  ),
-                  const SizedBox(height: 10),
-                  // Opcional: Un pequeño gráfico de barras para los totales
-                  SizedBox(
-                    height: 100, // Altura para el gráfico de totales
-                    child: BarChart(
-                      BarChartData(
-                        barGroups: [
-                          BarChartGroupData(
-                            x: 0,
-                            barRods: [
-                              BarChartRodData(toY: totalFavorSituacion.toDouble(), color: Colors.green, width: 25, borderRadius: BorderRadius.circular(5)),
-                            ],
-                            showingTooltipIndicators: [0],
-                          ),
-                          BarChartGroupData(
-                            x: 1,
-                            barRods: [
-                              BarChartRodData(toY: totalContraSituacion.toDouble(), color: Colors.red, width: 25, borderRadius: BorderRadius.circular(5)),
-                            ],
-                            showingTooltipIndicators: [0],
-                          ),
-                        ],
-                        titlesData: FlTitlesData(
-                          show: true,
-                          bottomTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              getTitlesWidget: (value, meta) {
-                                String text;
-                                switch (value.toInt()) {
-                                  case 0:
-                                    text = 'Favor';
-                                    break;
-                                  case 1:
-                                    text = 'Contra';
-                                    break;
-                                  default:
-                                    text = '';
-                                    break;
-                                }
-                                return Text(text, style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold));
-                              },
-                              reservedSize: 20,
-                              interval: 1,
-                            ),
-                          ),
-                          leftTitles: AxisTitles(
-                            sideTitles: SideTitles(
-                              showTitles: true,
-                              getTitlesWidget: (value, meta) {
-                                return Text(value.toInt().toString(), style: const TextStyle(fontSize: 10));
-                              },
-                              interval: 1,
-                              reservedSize: 28,
-                            ),
-                          ),
-                          topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                          rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                        ),
-                        borderData: FlBorderData(show: false),
-                        gridData: const FlGridData(show: true, drawVerticalLine: false),
-                        barTouchData: BarTouchData(
-                          touchTooltipData: BarTouchTooltipData(
-                            // CORRECCIÓN AQUÍ: Cambiado 'tooltipBgColor' a 'getTooltipColor'
-                            getTooltipColor: (group) => Colors.blueGrey,
-                            getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                              String label;
-                              switch (group.x.toInt()) {
-                                case 0:
-                                  label = 'Favor';
-                                  break;
-                                case 1:
-                                  label = 'Contra';
-                                  break;
-                                default:
-                                  label = '';
-                                  break;
-                              }
-                              return BarTooltipItem(
-                                '$label: ${rod.toY.toInt()}',
-                                const TextStyle(color: Colors.white),
-                              );
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Gráfico por tipo de situación (el que ya existía)
             SizedBox(
-              height: 300, // Altura fija para el gráfico
+              height: 300,
               child: BarChart(
                 BarChartData(
                   barGroups: situacionStatsConDatos.asMap().entries.map((entry) {
@@ -460,18 +332,8 @@ class EstadisticasScreen extends StatelessWidget {
                     return BarChartGroupData(
                       x: index,
                       barRods: [
-                        BarChartRodData(
-                          toY: favor,
-                          color: Colors.green, // Color para "A Favor"
-                          width: 10,
-                          borderRadius: BorderRadius.zero,
-                        ),
-                        BarChartRodData(
-                          toY: contra,
-                          color: Colors.red, // Color para "En Contra"
-                          width: 10,
-                          borderRadius: BorderRadius.zero,
-                        ),
+                        BarChartRodData(toY: favor, color: Colors.green, width: 10),
+                        BarChartRodData(toY: contra, color: Colors.red, width: 10),
                       ],
                       showingTooltipIndicators: [0, 1],
                     );
@@ -514,16 +376,8 @@ class EstadisticasScreen extends StatelessWidget {
                     touchTooltipData: BarTouchTooltipData(
                       getTooltipColor: (group) => Colors.blueGrey,
                       getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                        String label;
-                        if (rodIndex == 0) {
-                          label = 'Favor';
-                        } else {
-                          label = 'Contra';
-                        }
-                        return BarTooltipItem(
-                          '$label: ${rod.toY.toInt()}',
-                          const TextStyle(color: Colors.white),
-                        );
+                        final label = rodIndex == 0 ? 'Favor' : 'Contra';
+                        return BarTooltipItem('$label: ${rod.toY.toInt()}', const TextStyle(color: Colors.white));
                       },
                     ),
                   ),
@@ -536,12 +390,9 @@ class EstadisticasScreen extends StatelessWidget {
     );
   }
 
-  // --- Funcionalidad de Exportación a CSV ---
-
   void _exportDataToCsv(BuildContext context, AppData appData) async {
     final List<List<dynamic>> rawData = [];
 
-    // Encabezados para los datos crudos
     rawData.add([
       'ID Situacion',
       'Fecha y Hora',
@@ -551,23 +402,19 @@ class EstadisticasScreen extends StatelessWidget {
       'Jugadores en Cancha (IDs)',
     ]);
 
-    // Añadir cada situación registrada
     for (var situacion in appData.situacionesRegistradas) {
       rawData.add([
         situacion.id,
         situacion.timestamp.toIso8601String(),
         situacion.esAFavor ? 'Sí' : 'No',
         situacion.tipoLlegada,
-        situacion.jugadoresEnCanchaNombres.join(', '), // Nombres separados por coma
-        situacion.jugadoresEnCanchaIds.join(', '), // IDs separados por coma
+        situacion.jugadoresEnCanchaNombres.join(', '),
+        situacion.jugadoresEnCanchaIds.join(', '),
       ]);
     }
 
-    // Convertir la lista de listas a formato CSV
     final String csv = const ListToCsvConverter().convert(rawData);
 
-    // --- Opciones de Exportación ---
-    // 1. Copiar al portapapeles
     await Clipboard.setData(ClipboardData(text: csv));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
@@ -576,23 +423,12 @@ class EstadisticasScreen extends StatelessWidget {
       ),
     );
 
-    // 2. Descargar como archivo (solo funciona en web o si se implementa lógica de guardado de archivos en móvil/desktop)
-    // Para web, podemos crear un "data URI" y abrirlo en una nueva pestaña para que el navegador lo descargue.
-    if (Theme.of(context).platform == TargetPlatform.android || Theme.of(context).platform == TargetPlatform.iOS) {
-      // En móvil, necesitarías un paquete como path_provider y file_picker
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('La descarga directa de archivos en móvil requiere permisos adicionales. Datos copiados al portapapeles.'),
-          duration: Duration(seconds: 5),
-        ),
-      );
-    } else { // Para web, desktop
+    if (Theme.of(context).platform != TargetPlatform.android && Theme.of(context).platform != TargetPlatform.iOS) {
       final Uri dataUri = Uri.dataFromString(
         csv,
         mimeType: 'text/csv',
-        encoding: utf8, // Usar utf8 de dart:convert
+        encoding: utf8,
       );
-      // Abrir en una nueva pestaña para forzar la descarga
       if (await canLaunchUrl(dataUri)) {
         await launchUrl(dataUri);
       } else {
@@ -604,11 +440,5 @@ class EstadisticasScreen extends StatelessWidget {
         );
       }
     }
-
-    // NOTA sobre gráficos en Excel:
-    // La generación de gráficos directamente en un archivo Excel (.xlsx) desde una aplicación Flutter
-    // es una funcionalidad muy compleja que generalmente requiere librerías de backend o servicios especializados.
-    // Esta implementación exporta los datos crudos en formato CSV, que es fácilmente importable en Excel.
-    // Una vez en Excel, puedes usar las herramientas de Excel para crear los gráficos deseados.
   }
 }
