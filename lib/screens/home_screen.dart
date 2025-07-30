@@ -188,7 +188,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 // Contenido basado en el paso actual
                 Expanded(
                   child: _currentStep == AppStep.selectPlayers
-                      ? _buildPlayerSelectionGrid(appData.jugadoresDisponibles)
+                      ? _buildPlayerSelectionGrid(appData.jugadores)
                       : _currentStep == AppStep.selectType
                           ? _buildTypeSelectionButtons()
                           : _buildSituationTypeSelection(),
