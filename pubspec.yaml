@@ -30,6 +30,9 @@ dependencies:
   csv: ^5.1.1 # Para exportar datos a CSV
   url_launcher: ^6.2.2 # Para abrir URLs (útil para descargar CSV en web)
   fl_chart: ^0.68.0 # Para gráficos
+  excel: ^2.0.0
+  path_provider: ^2.0.15
+  share_plus: ^6.5.2
 
 dev_dependencies:
   flutter_test:
