@@ -26,7 +26,9 @@ class AppData extends ChangeNotifier {
 
   final List<Situacion> _situacionesRegistradas = [];
 
-  List<Jugador> get jugadoresDisponibles => List.unmodifiable(_jugadoresDisponibles);
+  // Getter público para acceder a la lista de jugadores
+  List<Jugador> get jugadores => List.unmodifiable(_jugadoresDisponibles);
+
   List<Situacion> get situacionesRegistradas => List.unmodifiable(_situacionesRegistradas);
 
   void addJugador(String nombre) {
@@ -54,7 +56,6 @@ class AppData extends ChangeNotifier {
     notifyListeners();
   }
 
-  // Estadísticas por jugador (pueden contener duplicados si un jugador aparece en varias situaciones)
   Map<String, Map<String, int>> getPlayerStats() {
     final Map<String, Map<String, int>> stats = {};
 
@@ -76,7 +77,6 @@ class AppData extends ChangeNotifier {
     return stats;
   }
 
-  // Estadísticas por tipo de situación
   Map<String, Map<String, int>> getSituacionTypeStats() {
     final Map<String, Map<String, int>> stats = {};
 
@@ -99,7 +99,6 @@ class AppData extends ChangeNotifier {
     return stats;
   }
 
-  // ✅ Totales reales de situaciones (sin duplicación por jugador)
   Map<String, int> getTotalesReales() {
     final int favor = _situacionesRegistradas.where((s) => s.esAFavor).length;
     final int contra = _situacionesRegistradas.where((s) => !s.esAFavor).length;
