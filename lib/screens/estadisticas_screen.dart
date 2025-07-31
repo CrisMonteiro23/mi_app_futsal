@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:mi_app_futsal/lib/data/app_data.dart';
+import '../data/app_data.dart';
 import 'package:mi_app_futsal/models/jugador.dart';
 import 'package:mi_app_futsal/models/situacion.dart';
 import 'package:fl_chart/fl_chart.dart';
